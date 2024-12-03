@@ -113,7 +113,8 @@ public class SmartMeterTests : TestBase
     {
         // Given
         var locationDto = new LocationDto("Some Streetname", "Some city", "Some state", "Some county", Continent.Asia);
-        var metadataDto = new MetadataDto(Guid.Parse("1c8c8313-6fc4-4ebd-9ca8-8a1267441e06"), DateTime.UtcNow, locationDto, 4);
+        var metadataDto = new MetadataDto(Guid.Parse("1c8c8313-6fc4-4ebd-9ca8-8a1267441e06"), DateTime.UtcNow,
+            locationDto, 4);
         var smartMeterExpected =
             new SmartMeterDto(Guid.Parse("f4c70232-6715-4c15-966f-bf4bcef46d39"), "Smart Meter 2", [metadataDto]);
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
@@ -196,12 +197,14 @@ public class SmartMeterTests : TestBase
     }
 
     [Test]
-    public async Task GivenSmartMeterIdAndMetadataCreateDtoAndAccessToken_WhenAddMetadata_ThenMetadataIsAddedToSmartMeter()
+    public async Task
+        GivenSmartMeterIdAndMetadataCreateDtoAndAccessToken_WhenAddMetadata_ThenMetadataIsAddedToSmartMeter()
     {
         // Given
         const int metadataCountExpected = 1;
         var smartMeterId = Guid.Parse("5e9db066-1b47-46cc-bbde-0b54c30167cd");
-        var locationDto = new LocationDto("Some street name", "Some city name", "Some state", "some country", Continent.Europe);
+        var locationDto = new LocationDto("Some street name", "Some city name", "Some state", "some country",
+            Continent.Europe);
         var metadataCreateDto = new MetadataCreateDto(DateTime.UtcNow, locationDto, 4);
         var httpContent = new StringContent(JsonConvert.SerializeObject(metadataCreateDto), Encoding.UTF8,
             "application/json");
@@ -229,7 +232,8 @@ public class SmartMeterTests : TestBase
         var metadataActual = smartMeter.Metadata[0];
         Assert.Multiple(() =>
         {
-            Assert.That(metadataActual.ValidFrom, Is.EqualTo(metadataCreateDto.ValidFrom).Within(TimeSpan.FromMilliseconds(1)));
+            Assert.That(metadataActual.ValidFrom,
+                Is.EqualTo(metadataCreateDto.ValidFrom).Within(TimeSpan.FromMilliseconds(1)));
             Assert.That(metadataActual.Location.StreetName, Is.EqualTo(metadataCreateDto.Location.StreetName));
             Assert.That(metadataActual.Location.City, Is.EqualTo(metadataCreateDto.Location.City));
             Assert.That(metadataActual.Location.State, Is.EqualTo(metadataCreateDto.Location.State));
@@ -244,7 +248,8 @@ public class SmartMeterTests : TestBase
     {
         // Given
         var smartMeterId = Guid.Parse("5e9db066-1b47-46cc-bbde-0b54c30167cd");
-        var locationDto = new LocationDto("Some street name", "Some city name", "Some state", "some country", Continent.Europe);
+        var locationDto = new LocationDto("Some street name", "Some city name", "Some state", "some country",
+            Continent.Europe);
         var metadataCreateDto = new MetadataCreateDto(DateTime.UtcNow, locationDto, 4);
         var httpContent = new StringContent(JsonConvert.SerializeObject(metadataCreateDto), Encoding.UTF8,
             "application/json");
@@ -258,7 +263,8 @@ public class SmartMeterTests : TestBase
     }
 
     [Test]
-    public async Task GivenSmartMeterIdAndMetadataIdAndAccessToken_WhenRemoveMetadata_ThenMetadataIsRemovedFromSmartMeter()
+    public async Task
+        GivenSmartMeterIdAndMetadataIdAndAccessToken_WhenRemoveMetadata_ThenMetadataIsRemovedFromSmartMeter()
     {
         // Given
         const int metadataCountExpected = 0;
@@ -291,6 +297,70 @@ public class SmartMeterTests : TestBase
 
         // When
         var response = await _httpClient.DeleteAsync($"{BaseUrl}/{smartMeterId}/metadata/{metadataId}");
+
+        // Then
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    [Test]
+    public async Task GivenSmartMeterIdAndMetadataUpdateDtoAndAccessToken_WhenUpdateMetadata_ThenMetadataIsUpdated()
+    {
+        // Given
+        var smartMeterId = Guid.Parse("f4c70232-6715-4c15-966f-bf4bcef46d39");
+        var metadataId = Guid.Parse("1c8c8313-6fc4-4ebd-9ca8-8a1267441e06");
+        var locationDto = new LocationDto("Updated street", "Updated city", "Updated state", "Updated country",
+            Continent.Asia);
+        var metadataUpdateDto = new MetadataUpdateDto(metadataId, DateTime.UtcNow, locationDto, 5);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(metadataUpdateDto), Encoding.UTF8,
+            "application/json");
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+
+        // When
+        var response = await _httpClient.PutAsync($"{BaseUrl}/{smartMeterId}/metadata/{metadataId}", httpContent);
+
+        // Then
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.That(responseContent, Is.Not.Null);
+
+        var returnedId = Guid.Parse(responseContent.Trim('"'));
+        Assert.That(returnedId, Is.EqualTo(metadataId));
+
+        var smartMeter = await _tenant1DbContext.SmartMeters
+            .AsNoTracking()
+            .Include(smartMeter => smartMeter.Metadata)
+            .FirstOrDefaultAsync(x => x.Id.Equals(new SmartMeterId(smartMeterId)));
+
+        Assert.That(smartMeter, Is.Not.Null);
+        var metadataActual = smartMeter.Metadata.FirstOrDefault(m => m.Id.Equals(new MetadataId(metadataId)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(metadataActual, Is.Not.Null);
+            Assert.That(metadataActual!.Location.StreetName, Is.EqualTo(metadataUpdateDto.Location.StreetName));
+            Assert.That(metadataActual.Location.City, Is.EqualTo(metadataUpdateDto.Location.City));
+            Assert.That(metadataActual.Location.State, Is.EqualTo(metadataUpdateDto.Location.State));
+            Assert.That(metadataActual.Location.Country, Is.EqualTo(metadataUpdateDto.Location.Country));
+            Assert.That(metadataActual.Location.Continent, Is.EqualTo(metadataUpdateDto.Location.Continent));
+            Assert.That(metadataActual.HouseholdSize, Is.EqualTo(metadataUpdateDto.HouseholdSize));
+        });
+    }
+
+    [Test]
+    public async Task
+        GivenSmartMeterIdAndMetadataUpdateDtoAndNoAccessToken_WhenUpdateMetadata_ThenUnauthorizedIsReturned()
+    {
+        // Given
+        var smartMeterId = Guid.Parse("5e9db066-1b47-46cc-bbde-0b54c30167cd");
+        var metadataId = Guid.Parse("1c8c8313-6fc4-4ebd-9ca8-8a1267441e06");
+        var locationDto = new LocationDto("Updated street", "Updated city", "Updated state", "Updated country",
+            Continent.Asia);
+        var metadataUpdateDto = new MetadataUpdateDto(metadataId, DateTime.UtcNow, locationDto, 5);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(metadataUpdateDto), Encoding.UTF8,
+            "application/json");
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "");
+
+        // When
+        var response = await _httpClient.PutAsync($"{BaseUrl}/{smartMeterId}/metadata/{metadataId}", httpContent);
 
         // Then
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));

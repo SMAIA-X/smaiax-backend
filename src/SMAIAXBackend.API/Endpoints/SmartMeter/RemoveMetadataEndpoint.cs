@@ -15,7 +15,7 @@ public static class RemoveMetadataEndpoint
         [FromRoute] Guid metadataId,
         ClaimsPrincipal user)
     {
-        await smartMeterDeleteService.RemoveMetadataFromSmartMeterAsync(smartMeterId, metadataId);
+        await smartMeterDeleteService.DeleteMetadataAsync(smartMeterId, metadataId);
 
         return TypedResults.NoContent();
     }

@@ -7,6 +7,7 @@ using SMAIAXBackend.Application.Exceptions;
 using SMAIAXBackend.Application.Services.Implementations;
 using SMAIAXBackend.Domain.Model.Entities;
 using SMAIAXBackend.Domain.Model.Enums;
+using SMAIAXBackend.Domain.Model.ValueObjects;
 using SMAIAXBackend.Domain.Model.ValueObjects.Ids;
 using SMAIAXBackend.Domain.Repositories;
 using SMAIAXBackend.Domain.Repositories.Transactions;
@@ -109,6 +110,30 @@ public class SmartMeterCreateServiceTests
 
         // Then ... Then
         Assert.ThrowsAsync<SmartMeterNotFoundException>(async () =>
+            await _smartMeterCreateService.AddMetadataAsync(smartMeterId.Id, metadataCreateDto));
+    }
+
+    [Test]
+    public void
+        GivenSmartMeterIdAndExistingMetadataCreateDto_WhenAddMetadata_ThenMetadataAlreadyExistsExceptionIsThrown()
+    {
+        // Given
+        var smartMeterId = new SmartMeterId(Guid.NewGuid());
+        var metadataId = new MetadataId(Guid.NewGuid());
+        var metadataCreateDto = new MetadataCreateDto(DateTime.UtcNow,
+            new LocationDto("Test Street", "Test City", "Test State", "Test Country", Continent.Europe), 1);
+        var smartMeter = SmartMeter.Create(smartMeterId, "Test Smart Meter", []);
+        var existingMetadata = Metadata.Create(metadataId, DateTime.UtcNow,
+            new Location("Test Street", "Test City", "Test State", "Test Country", Continent.Europe), 1, smartMeterId);
+
+        smartMeter.AddMetadata(existingMetadata);
+
+        _smartMeterRepositoryMock.Setup(repo => repo.GetSmartMeterByIdAsync(smartMeterId))
+            .ReturnsAsync(smartMeter);
+        _smartMeterRepositoryMock.Setup(repo => repo.NextMetadataIdentity()).Returns(metadataId);
+
+        // When ... Then
+        Assert.ThrowsAsync<MetadataAlreadyExistsException>(async () =>
             await _smartMeterCreateService.AddMetadataAsync(smartMeterId.Id, metadataCreateDto));
     }
 }

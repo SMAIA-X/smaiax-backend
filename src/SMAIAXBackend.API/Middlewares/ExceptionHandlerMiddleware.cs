@@ -16,6 +16,7 @@ public class ExceptionHandlerMiddleware : IExceptionHandler
 
         switch (exception)
         {
+            case MetadataNotFoundException:
             case PolicyRequestNotFoundException:
             case SmartMeterNotFoundException:
             case UserNotFoundException:
@@ -35,11 +36,13 @@ public class ExceptionHandlerMiddleware : IExceptionHandler
                 problemDetails.Status = StatusCodes.Status400BadRequest;
                 problemDetails.Title = "Registration Error";
                 break;
-            case ArgumentException:
+            case ExistingPoliciesException:
+            case MetadataAlreadyExistsException:
                 problemDetails.Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8";
                 problemDetails.Status = StatusCodes.Status409Conflict;
                 problemDetails.Title = "Conflict";
                 break;
+            case MetadataIdMismatchException:
             case SmartMeterIdMismatchException:
             case InsufficientLocationDataException:
                 problemDetails.Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1";

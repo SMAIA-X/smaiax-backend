@@ -41,14 +41,14 @@ public class SmartMeterDeleteServiceTests
             .ReturnsAsync(smartMeter);
 
         // When
-        await _smartMeterDeleteService.RemoveMetadataFromSmartMeterAsync(smartMeter.Id.Id, metadata.Id.Id);
+        await _smartMeterDeleteService.DeleteMetadataAsync(smartMeter.Id.Id, metadata.Id.Id);
 
         // Then
         Assert.That(smartMeter.Metadata, Is.Empty);
     }
 
     [Test]
-    public void GivenSmartMeterIdAndNonExistentMetadataIdAndUserId_WhenRemoveMetadataFromSmartMeter_ThenSmartMeterNotFoundExceptionIsThrown()
+    public void GivenNonExistentSmartMeterIdAndMetadataIdAndUserId_WhenRemoveMetadataFromSmartMeter_ThenSmartMeterNotFoundExceptionIsThrown()
     {
         // Given
         var smartMeterId = new SmartMeterId(Guid.NewGuid());
@@ -59,6 +59,22 @@ public class SmartMeterDeleteServiceTests
 
         // When ... Then
         Assert.ThrowsAsync<SmartMeterNotFoundException>(() =>
-            _smartMeterDeleteService.RemoveMetadataFromSmartMeterAsync(smartMeterId.Id, metadataId.Id));
+            _smartMeterDeleteService.DeleteMetadataAsync(smartMeterId.Id, metadataId.Id));
+    }
+
+    [Test]
+    public void GivenSmartMeterIdAndNonExistentMetadataId_WhenRemoveMetadataFromSmartMeter_ThenMetadataNotFoundExceptionIsThrown()
+    {
+        // Given
+        var smartMeterId = new SmartMeterId(Guid.NewGuid());
+        var metadataId = new MetadataId(Guid.NewGuid());
+        var smartMeter = SmartMeter.Create(smartMeterId, "Smart Meter", []);
+
+        _smartMeterRepositoryMock.Setup(x => x.GetSmartMeterByIdAsync(smartMeterId))
+            .ReturnsAsync(smartMeter);
+
+        // When ... Then
+        Assert.ThrowsAsync<MetadataNotFoundException>(() =>
+            _smartMeterDeleteService.DeleteMetadataAsync(smartMeterId.Id, metadataId.Id));
     }
 }

@@ -68,7 +68,16 @@ public class SmartMeterCreateService(
             metadataCreateDto.Location.State, metadataCreateDto.Location.Country, metadataCreateDto.Location.Continent);
         var metadata = Metadata.Create(metadataId, metadataCreateDto.ValidFrom, location,
             metadataCreateDto.HouseholdSize, smartMeter.Id);
-        smartMeter.AddMetadata(metadata);
+
+        try
+        {
+            smartMeter.AddMetadata(metadata);
+        }
+        catch (ArgumentException ex)
+        {
+            logger.LogError(ex, "Metadata with id '{MetadataId}' already exists", metadataId.Id);
+            throw new MetadataAlreadyExistsException(metadataId.Id);
+        }
 
         await smartMeterRepository.UpdateAsync(smartMeter);
 
