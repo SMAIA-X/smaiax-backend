@@ -71,6 +71,8 @@
       retries: 5
     command: >
       sh -c "rabbitmq-plugins enable rabbitmq_management rabbitmq_mqtt && rabbitmq-server"
+    networks:
+      - smaiax-backend-network
 
 networks:
   smaiax-backend-network:
