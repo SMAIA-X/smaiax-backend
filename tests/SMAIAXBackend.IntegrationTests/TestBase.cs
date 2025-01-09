@@ -153,10 +153,6 @@ public class TestBase
         var smartMeter2 = SmartMeter.Create(smartMeter2Id, "Smart Meter 2", [smartMeter2Metadata],
             new ConnectorSerialNumber(Guid.NewGuid()),
             "MIICCgKCAgEAncWYOkd7VTOFoE4QJuvdEAP1x+PJVM9bRf+Bs9t1V3NDn5tNUplP0Y6fbamWTAh3Irji5KwxNCSrDVtX6IJ7qDRRN6TG3kbBLngyWQsajO7laLYshFE86jseuEGx3hu9bbN3Q1gLsVb2mkJukw6v0LugiSK++3wFisfVTOAe59XxE0geMTyghnc2jak/LEI5nNoe85yinVAzCQiHJqxqjA93IWwKT7MMOUoVHXOnPd84TeXIuPKNHhfG5J/K545z7cyzLfEfyCvCs6cxsjpFNilrWqxmh4J9ukcooVv7p3s7DSJNWsEbaW6XC4Q+wvy6aHmIVE7llgyV216+qWr8EMCMcHDTnaXr1/PcLFfqOelCgqAU2aIFIZvrAl2GZruFHso/VbryMq9iPQQK5nfJJNisUCQRtUIehTajfGMfBiI62lgqV8Qa/J2pksYppLzX9vQlEa3IsMOCkIwkK/sHHkOx+dfyVoASYnhMDHfQ35aGpCZpaM9XdVfcE0Aip5plpgxDMefg70Ur1TfGJFqD5ix04ehIewg2oh6yu/nU5jAMVm9CsKqUcmpmQkdp2pEb4s6t4A2aIgPMpZpzJmp4WDEsr0v+Bo+kFRDNnWK9dfxav6duE3fLL/IJiX6YfmbRsC0mC+7Mmptg1reeI7xgw4eWfDQluKx7z+2uHQVcgqECAwEAAQ==");
-        var policyRequest = PolicyRequest.Create(
-            new PolicyRequestId(Guid.Parse("58af578c-9975-4633-8dfe-ff8b70b83661")),
-            false, new PolicyFilter(MeasurementResolution.Hour, 1, 10, [],
-                LocationResolution.State, 500));
 
         // Jane Doe
         var smartMeter3Id = new SmartMeterId(Guid.Parse("f4c70232-6715-4c15-966f-bf4bcef46d49"));
@@ -188,7 +184,6 @@ public class TestBase
         await _tenant1DbContext.SmartMeters.AddAsync(smartMeter1);
         await _tenant1DbContext.SmartMeters.AddAsync(smartMeter2);
         await _tenant1DbContext.SmartMeters.AddAsync(unassignedSmartMeter);
-        await _tenant1DbContext.PolicyRequests.AddAsync(policyRequest);
         await _tenant2DbContext.SmartMeters.AddAsync(smartMeter3);
         await _tenant2DbContext.Policies.AddAsync(policy1);
         await _tenant2DbContext.Policies.AddAsync(policy2);

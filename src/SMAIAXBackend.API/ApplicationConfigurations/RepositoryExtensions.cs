@@ -19,5 +19,6 @@ public static class RepositoryExtensions
         services.AddScoped<ITransactionManager, TransactionManager>();
         services.AddScoped<ISmartMeterRepository, SmartMeterRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IContractRepository, ContractRepository>();
     }
 }

@@ -57,26 +57,6 @@ classDiagram
         }
     }
 
-    namespace PolicyRequestAggregate {
-        class PolicyRequest {
-            <<AggregateRoot>>
-            id
-            isAutomaticContractingEnabled
-            policyFilter
-            state
-        }
-
-        class PolicyFilter {
-            <<ValueObject>>
-            measurementResolution
-            minHouseHoldSize
-            maxHouseHoldSize
-            locations
-            locationResolution
-            maxPrice
-        }
-    }
-
     namespace ContractAggregate {
         class Contract {
             <<AggregateRoot>>
@@ -87,10 +67,8 @@ classDiagram
 
 Measurement .. Metadata : matching by timestamp
 Contract "0..*" -- "1" Policy
-Contract "0..*" -- "1" PolicyRequest
+Contract "0..*" -- "1" User
 Policy "0..*" -- "1" User : creates
-PolicyRequest -- PolicyFilter
-PolicyRequest "0..*" -- "1" User : creates
 User "1" -- "0..*" SmartMeter : owns
 SmartMeter "1" -- "0..*" Policy : refers to
 SmartMeter "1" -- "0..*" Measurement : produces

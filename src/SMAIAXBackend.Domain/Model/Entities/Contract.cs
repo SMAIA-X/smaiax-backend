@@ -9,15 +9,13 @@ public sealed class Contract : IEquatable<Contract>
     public ContractId Id { get; } = null!;
     public DateTime CreatedAt { get; }
     public PolicyId PolicyId { get; }
-    public PolicyRequestId PolicyRequestId { get; }
 
     public static Contract Create(
         ContractId id,
         DateTime createdAt,
-        PolicyId policyId,
-        PolicyRequestId policyRequestId)
+        PolicyId policyId)
     {
-        return new Contract(id, createdAt, policyId, policyRequestId);
+        return new Contract(id, createdAt, policyId);
     }
 
     // Needed by EF Core
@@ -29,13 +27,11 @@ public sealed class Contract : IEquatable<Contract>
     private Contract(
         ContractId id,
         DateTime createdAt,
-        PolicyId policyId,
-        PolicyRequestId policyRequestId)
+        PolicyId policyId)
     {
         Id = id;
         CreatedAt = createdAt;
         PolicyId = policyId;
-        PolicyRequestId = policyRequestId;
     }
 
     [ExcludeFromCodeCoverage]

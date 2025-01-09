@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 using SMAIAXBackend.API.ApplicationConfigurations;
 using SMAIAXBackend.API.Endpoints.Authentication;
+using SMAIAXBackend.API.Endpoints.Contract;
 using SMAIAXBackend.API.Endpoints.DeviceConfig;
 using SMAIAXBackend.API.Endpoints.Measurement;
 using SMAIAXBackend.API.Endpoints.Order;
@@ -99,7 +100,8 @@ app.MapAuthenticationEndpoints()
     .MapPolicyEndpoints()
     .MapDeviceConfigEndpoints()
     .MapOrderEndpoints()
-    .MapMeasurementEndpoints();
+    .MapMeasurementEndpoints()
+    .MapContractEndpoints();
 
 await app.RunAsync();
 
