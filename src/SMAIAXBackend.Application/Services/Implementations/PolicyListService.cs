@@ -32,7 +32,7 @@ public class PolicyListService(
     }
 
     public async Task<List<PolicyDto>> GetFilteredPoliciesAsync(decimal? maxPrice,
-        MeasurementResolution? measurementResolution)
+        MeasurementResolution? measurementResolution, LocationResolution? locationResolution)
     {
         var matchingPolicies = new List<PolicyDto>();
         ISpecification<Policy> specification = new BaseSpecification<Policy>();
@@ -48,6 +48,13 @@ public class PolicyListService(
             var measurementResolutionSpecification =
                 new MeasurementResolutionSpecification(measurementResolution.Value);
             specification = new AndSpecification<Policy>(specification, measurementResolutionSpecification);
+        }
+
+        if (locationResolution.HasValue)
+        {
+            var locationResolutionSpecification =
+                new PolicyLocationResolutionSpecification(locationResolution.Value);
+            specification = new AndSpecification<Policy>(specification, locationResolutionSpecification);
         }
 
         var currentTenant = await tenantContextService.GetCurrentTenantAsync();
@@ -93,7 +100,7 @@ public class PolicyListService(
         }
 
         var timeSpans = new List<(DateTime?, DateTime?)>();
-        var specification = new LocationResolutionSpecification(policy.LocationResolution);
+        var specification = new MetadataLocationResolutionSpecification(policy.LocationResolution);
         for (var i = 0; i < metadata!.Count; i += 1)
         {
             if (!specification.IsSatisfiedBy(metadata[i]))

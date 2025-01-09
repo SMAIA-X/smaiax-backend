@@ -12,9 +12,10 @@ public static class SearchPoliciesEndpoint
     public static async Task<Ok<List<PolicyDto>>> Handle(
         IPolicyListService policyListService,
         [FromQuery] decimal? maxPrice,
-        [FromQuery] MeasurementResolution? measurementResolution)
+        [FromQuery] MeasurementResolution? measurementResolution,
+        [FromQuery] LocationResolution? locationResolution)
     {
-        var policies = await policyListService.GetFilteredPoliciesAsync(maxPrice, measurementResolution);
+        var policies = await policyListService.GetFilteredPoliciesAsync(maxPrice, measurementResolution, locationResolution);
 
         return TypedResults.Ok(policies);
     }

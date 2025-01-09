@@ -3,7 +3,7 @@ using SMAIAXBackend.Domain.Model.Enums;
 
 namespace SMAIAXBackend.Domain.Specifications;
 
-public class LocationResolutionSpecification(LocationResolution locationResolution) : ISpecification<Metadata>
+public class MetadataLocationResolutionSpecification(LocationResolution locationResolution) : ISpecification<Metadata>
 {
     public bool IsSatisfiedBy(Metadata metadata)
     {
