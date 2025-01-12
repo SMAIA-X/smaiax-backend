@@ -43,7 +43,7 @@ public class SmartMeterCreateServiceTests
         // Given
         var serialNumber = new ConnectorSerialNumber(Guid.NewGuid());
         var smartMeterIdExpected = new SmartMeterId(Guid.NewGuid());
-        var smartMeter = SmartMeter.Create(smartMeterIdExpected, serialNumber, "");
+        var smartMeter = SmartMeter.Create(smartMeterIdExpected, "test", serialNumber, "");
         var smartMeterAssignDto = new SmartMeterAssignDto(serialNumber.SerialNumber, "Test Smart Meter", null);
 
         _smartMeterRepositoryMock.Setup(repo => repo.GetSmartMeterBySerialNumberAsync(serialNumber)).ReturnsAsync(smartMeter);
@@ -62,7 +62,7 @@ public class SmartMeterCreateServiceTests
         // Given
         var serialNumber = new ConnectorSerialNumber(Guid.NewGuid());
         var smartMeterIdExpected = new SmartMeterId(Guid.NewGuid());
-        var smartMeter = SmartMeter.Create(smartMeterIdExpected, serialNumber, "");
+        var smartMeter = SmartMeter.Create(smartMeterIdExpected, "test", serialNumber, "");
         var smartMeterAssignDto = new SmartMeterAssignDto(serialNumber.SerialNumber, "Test Smart Meter",
             new MetadataCreateDto(DateTime.UtcNow,
                 new LocationDto("Test Street", "Test City", "Test State", "Test Country", Continent.Europe), 1));

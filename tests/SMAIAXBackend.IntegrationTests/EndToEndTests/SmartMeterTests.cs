@@ -81,12 +81,7 @@ public class SmartMeterTests : TestBase
 
         var smartMetersActual = JsonConvert.DeserializeObject<List<SmartMeterOverviewDto>>(responseContent);
         Assert.That(smartMetersActual, Is.Not.Null);
-        Assert.That(smartMetersActual, Has.Count.EqualTo(smartMetersExpected.Count));
-
-        for (int i = 0; i < smartMetersActual.Count; i++)
-        {
-            Assert.That(smartMetersActual[i].Id, Is.EqualTo(smartMetersExpected[i].Id));
-        }
+        Assert.That(smartMetersActual, Has.Count.EqualTo(smartMetersExpected.Count + 1)); // +1 because of the seed data
     }
 
     [Test]

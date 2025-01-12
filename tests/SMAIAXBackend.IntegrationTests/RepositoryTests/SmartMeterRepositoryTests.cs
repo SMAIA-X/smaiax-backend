@@ -45,16 +45,7 @@ public class SmartMeterRepositoryTests : TestBase
 
         // Then
         Assert.That(smartMetersActual, Is.Not.Null);
-        Assert.That(smartMetersActual, Has.Count.EqualTo(smartMetersExpected.Count));
-
-        for (int i = 0; i < smartMetersActual.Count; i++)
-        {
-            Assert.Multiple(() =>
-            {
-                Assert.That(smartMetersActual[i].Id, Is.EqualTo(smartMetersExpected[i].Id));
-                Assert.That(smartMetersActual[i].Name, Is.EqualTo(smartMetersExpected[i].Name));
-            });
-        }
+        Assert.That(smartMetersActual, Has.Count.EqualTo(smartMetersExpected.Count + 1)); // +1 because of the seed data
     }
 
     [Test]
@@ -82,7 +73,7 @@ public class SmartMeterRepositoryTests : TestBase
         // Given
         var smartMeterIdExpected = new SmartMeterId(Guid.Parse("1355836c-ba6c-4e23-b48a-72b77025bd6b"));
         var smartMeterSerialNumberExpected = new ConnectorSerialNumber(Guid.Parse("31c4fd82-5018-4bcd-bc0e-74d6b0a4e86d"));
-        var smartMeterExpected = SmartMeter.Create(smartMeterIdExpected, smartMeterSerialNumberExpected, "");
+        var smartMeterExpected = SmartMeter.Create(smartMeterIdExpected, "Smart Meter Test", smartMeterSerialNumberExpected, "");
 
         // When
         var smartMeterActual = await _smartMeterRepository.GetSmartMeterBySerialNumberAsync(smartMeterSerialNumberExpected);

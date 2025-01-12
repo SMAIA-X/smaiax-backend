@@ -12,7 +12,7 @@ public sealed class SmartMeter : IEquatable<SmartMeter>
 
     public ConnectorSerialNumber ConnectorSerialNumber { get; private set; } = new ConnectorSerialNumber(Guid.Empty);
     public string Name { get; private set; } = "";
-    public List<Metadata> Metadata { get; }
+    public List<Metadata> Metadata { get; } = new List<Metadata>();
 
     public string PublicKey { get; private set; } = null!;
 
@@ -21,9 +21,9 @@ public sealed class SmartMeter : IEquatable<SmartMeter>
         return new SmartMeter(smartMeterId, name, metadata);
     }
 
-    public static SmartMeter Create(SmartMeterId smartMeterId, ConnectorSerialNumber connectorSerialNumber, string publicKey)
+    public static SmartMeter Create(SmartMeterId smartMeterId, string name, ConnectorSerialNumber connectorSerialNumber, string publicKey)
     {
-        return new SmartMeter(smartMeterId, connectorSerialNumber, publicKey);
+        return new SmartMeter(smartMeterId, name, connectorSerialNumber, publicKey);
     }
 
     public static SmartMeter Create(SmartMeterId smartMeterId, string name, List<Metadata> metadata, ConnectorSerialNumber connectorSerialNumber, string publicKey)
@@ -43,13 +43,12 @@ public sealed class SmartMeter : IEquatable<SmartMeter>
         Name = name;
         Metadata = metadata;
     }
-
-    private SmartMeter(SmartMeterId smartMeterId, ConnectorSerialNumber connectorSerialNumber, string publicKey)
+    private SmartMeter(SmartMeterId smartMeterId, string name, ConnectorSerialNumber connectorSerialNumber, string publicKey)
     {
         Id = smartMeterId;
+        Name = name;
         ConnectorSerialNumber = connectorSerialNumber;
         PublicKey = publicKey;
-        Metadata = [];
     }
 
     private SmartMeter(SmartMeterId smartMeterId, string name, List<Metadata> metadata, ConnectorSerialNumber connectorSerialNumber, string publicKey)

@@ -24,7 +24,9 @@ public class OrderService(
 
         await transactionManager.ReadCommittedTransactionScope(async () =>
         {
-            var smartMeter = SmartMeter.Create(smartMeterId, connectorSerialNumber, publicKey);
+            var smartMeter = SmartMeter.Create(smartMeterId,
+                "Smart Meter " + GenerateRandomEmoji() + GenerateRandomEmoji() + GenerateRandomEmoji(),
+                connectorSerialNumber, publicKey);
             await smartMeterRepository.AddAsync(smartMeter);
 
             string topic = $"smartmeter/{smartMeterId}";
@@ -35,5 +37,22 @@ public class OrderService(
         });
 
         return connectorSerialNumber;
+    }
+
+    private static string GenerateRandomEmoji()
+    {
+        Random random = new Random();
+
+        var emojiRanges = new List<(int Min, int Max)>
+        {
+            (0x1F600, 0x1F64F), // Smiley faces
+            (0x1F300, 0x1F5FF), // Miscellaneous symbols
+            (0x1F680, 0x1F6FF), // Transport and map symbols
+            (0x1F400, 0x1F4FF), // Animals and nature
+        };
+
+        var selectedRange = emojiRanges[random.Next(emojiRanges.Count)];
+        int randomEmojiCode = random.Next(selectedRange.Min, selectedRange.Max + 1);
+        return char.ConvertFromUtf32(randomEmojiCode);
     }
 }

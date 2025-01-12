@@ -173,7 +173,7 @@ public class TestBase
 
         var unassignedSmartMeterId = new SmartMeterId(Guid.Parse("1355836c-ba6c-4e23-b48a-72b77025bd6b"));
         var unassignedSmartMeterSerialNumber = new ConnectorSerialNumber(Guid.Parse("31c4fd82-5018-4bcd-bc0e-74d6b0a4e86d"));
-        var unassignedSmartMeter = SmartMeter.Create(unassignedSmartMeterId, unassignedSmartMeterSerialNumber, "");
+        var unassignedSmartMeter = SmartMeter.Create(unassignedSmartMeterId, "Smart Meter 01", unassignedSmartMeterSerialNumber, "");
 
         await _applicationDbContext.Tenants.AddAsync(johnDoeTenant);
         await _applicationDbContext.Tenants.AddAsync(janeDoeTenant);
